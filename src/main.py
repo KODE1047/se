@@ -1,10 +1,11 @@
+# /src/main.py
+from src.cli.main_menu import run_main_menu
+
 def main():
     """
     Main entry point for the University Library Management System.
     """
-    print("Initializing University Library Management System...")
-    print("Project structure and data models are in place.")
-    # In the future, this will start the main application loop.
+    run_main_menu()
 
 if __name__ == "__main__":
     main()

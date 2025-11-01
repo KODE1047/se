@@ -115,3 +115,11 @@ Please provide the first development task (e.g., "Create the initial CLI structu
     </initialization>
 </system_prompt>
 ```
+
+---
+
+SE1_P_1_cli
+
+```
+Create the initial CLI structure and data models for Student and Book, without a database
+```
