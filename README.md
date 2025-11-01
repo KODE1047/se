@@ -88,7 +88,6 @@ Recommended small improvements:
 ## Images
 
 
-![Screenshot 1 - main menu](assets/images/img1.png)
 ![Screenshot 2 - book list](assets/images/img2.png)
 
 ## License & credits
