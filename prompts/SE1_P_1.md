@@ -99,7 +99,7 @@ SE1_P_1
 
     <output_rules>
         <rule id="code_format">All code must be provided in full. Do not use snippets or placeholders unless explicitly asked.</rule>
-        <rule id="file_labeling">Each code block must be preceded by a comment indicating its full file path.
+        <rule id="file_labeling">Each code block must be preceded by a comment indicating its full file path.git commit --amend --no-edit
             - Python: `# /path/to/file.py`
             - Other: `` or `// /path/to/file.js`
         </rule>
