@@ -1,11 +1,15 @@
 # /src/main.py
 from src.cli.main_menu import run_main_menu
+from src.cli.ui import console
 
 def main():
     """
     Main entry point for the University Library Management System.
     """
-    run_main_menu()
+    try:
+        run_main_menu()
+    except KeyboardInterrupt:
+        console.print("\n[bold yellow]Application exited manually. Goodbye![/bold yellow]")
 
 if __name__ == "__main__":
     main()

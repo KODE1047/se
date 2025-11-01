@@ -123,3 +123,9 @@ SE1_P_1_cli
 ```
 Create the initial CLI structure and data models for Student and Book, without a database
 ```
+
+SE_P_1_better cli UI
+
+```
+Make the visual more beautiful and readable. Use CLI developers methods in Python.
+```

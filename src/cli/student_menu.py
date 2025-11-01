@@ -1,60 +1,72 @@
 # /src/cli/student_menu.py
-import getpass
+from rich.panel import Panel
+from rich.prompt import Prompt
+from rich.table import Table
+
 from src.services import student_service
+from src.cli.ui import console
+import src.data as data
 
 def run_student_menu():
     """
     Displays the menu for Student users.
     """
     while True:
-        print("\n--- Student Menu ---")
-        print("1. Register (Req 1-1)")
-        print("2. Login (Req 1-2) [Not Implemented]")
-        print("3. List All Students (Testing)")
-        print("0. Back to Main Menu")
+        console.print(Panel(
+            "[bold]What would you like to do?[/bold]\n\n"
+            "  [1] Register (Req 1-1)\n"
+            "  [2] Login (Req 1-2) [Not Implemented]\n"
+            "  [3] List All Students (Testing)\n"
+            "  [0] Back to Main Menu",
+            title="--- Student Menu ---",
+            border_style="green"
+        ))
         
-        choice = input("Enter your choice: ")
+        choice = Prompt.ask("Enter your choice", choices=["1", "2", "3", "0"], default="1")
         
         if choice == '1':
             handle_register_student()
         elif choice == '2':
-            print("Login functionality is not yet implemented.")
+            console.print("[yellow]Login functionality is not yet implemented.[/yellow]")
         elif choice == '3':
             handle_list_students()
         elif choice == '0':
-            print("Returning to Main Menu...")
+            console.print("[dim]Returning to Main Menu...[/dim]")
             break
-        else:
-            print("Invalid choice, please try again.")
 
 def handle_register_student():
     """Handles the UI for student registration."""
-    print("\n[Student Registration]")
-    username = input("Enter new username: ").strip()
-    password = getpass.getpass("Enter new password: ").strip()
+    console.print("\n[bold]--- Student Registration ---[/bold]")
+    username = Prompt.ask("Enter new username")
+    password = Prompt.ask("Enter new password", password=True)
     
-    if not username or not password:
-        print("Error: Username and password cannot be empty.")
+    if not username.strip() or not password.strip():
+        console.print("[danger]Error: Username and password cannot be empty.[/danger]")
         return
 
     try:
         new_student = student_service.register_student(username, password)
-        print(f"\nSuccess: Student '{new_student.username}' registered!")
-        print(f"Your Student ID is: {new_student.student_id}")
+        console.print(f"\n[bold green]Success: Student '{new_student.username}' registered![/bold green]")
+        console.print(f"Your Student ID is: [cyan]{new_student.student_id}[/cyan]")
     except ValueError as e:
-        print(f"\nError: {e}")
+        console.print(f"\n[danger]Error: {e}[/danger]")
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        console.print(f"\n[danger]An unexpected error occurred: {e}[/danger]")
 
 def handle_list_students():
     """(For testing) Displays all students currently in the system."""
-    from src.data import students # Import here to get the current list
-    print("\n--- All Registered Students ---")
-    if not students:
-        print("No students registered yet.")
+    console.print("\n[bold]--- All Registered Students ---[/bold]")
+    if not data.students:
+        console.print("[yellow]No students registered yet.[/yellow]")
         return
+
+    table = Table(title="Registered Students")
+    table.add_column("Student ID", style="cyan", no_wrap=True)
+    table.add_column("Username", style="magenta")
+    table.add_column("Status", justify="right", style="green")
+
+    for student in data.students:
+        status = "Active" if student.is_active else "Inactive"
+        table.add_row(str(student.student_id), student.username, status)
         
-    for i, student in enumerate(students):
-        print(f"{i+1}. {student.username} (Active: {student.is_active})")
-        print(f"   ID: {student.student_id}")
-    print("-----------------------------")
+    console.print(table)
