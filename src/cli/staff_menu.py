@@ -3,9 +3,9 @@ from rich.panel import Panel
 from rich.prompt import Prompt, IntPrompt
 from rich.table import Table
 
-from src.services import book_service
-from src.cli.ui import console
-import src.data as data
+from services import book_service  # MODIFIED
+from cli.ui import console         # MODIFIED
+import data as data                # MODIFIED
 
 def run_staff_menu():
     """

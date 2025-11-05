@@ -2,9 +2,9 @@
 from rich.panel import Panel
 from rich.prompt import Prompt
 
-from src.cli import student_menu
-from src.cli import staff_menu
-from src.cli.ui import console
+from cli import student_menu  # MODIFIED
+from cli import staff_menu    # MODIFIED
+from cli.ui import console    # MODIFIED
 
 def run_main_menu():
     """

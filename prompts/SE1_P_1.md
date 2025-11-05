@@ -129,3 +129,17 @@ SE_P_1_better cli UI
 ```
 Make the visual more beautiful and readable. Use CLI developers methods in Python.
 ```
+
+SE_P_1_better fix paths
+
+```
+Correct import path I get this error when I run src/main.py
+
+kode@pop-os:~/Desktop/Assiment/5th sem/software Engeneering$ /bin/python3 "/home/kode/Desktop/Assiment/5th sem/software Engeneering/src/main.py"
+Traceback (most recent call last):
+  File "/home/kode/Desktop/Assiment/5th sem/software Engeneering/src/main.py", line 2, in <module>
+    from cli.main_menu import run_main_menu
+  File "/home/kode/Desktop/Assiment/5th sem/software Engeneering/src/cli/main_menu.py", line 5, in <module>
+    from src.cli import student_menu
+ModuleNotFoundError: No module named 'src'
+```

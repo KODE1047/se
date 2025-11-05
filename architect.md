@@ -32,5 +32,9 @@ This document outlines the software architecture, data models, and file structur
 ### 4.1. Student Service (`src/services/student_service.py`)
 
 ```python
+# Now uses relative imports like:
+# from models.student import Student
+# import data
+
 def register_student(username: str, password: str) -> Student:
     ...

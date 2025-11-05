@@ -1,6 +1,6 @@
 # /src/services/book_service.py
-from src.models.book import Book
-import src.data as data
+from models.book import Book  # MODIFIED
+import data as data           # MODIFIED
 
 def add_book(title: str, author: str, publication_year: int) -> Book:
     """

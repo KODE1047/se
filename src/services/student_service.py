@@ -1,6 +1,6 @@
 # /src/services/student_service.py
-from src.models.student import Student
-import src.data as data
+from models.student import Student  # MODIFIED
+import data as data                 # MODIFIED
 
 def register_student(username: str, password: str) -> Student:
     """
