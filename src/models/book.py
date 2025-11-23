@@ -1,3 +1,5 @@
+# /src/model/book.py
+
 import uuid
 from dataclasses import dataclass, field
 from uuid import UUID

@@ -1,3 +1,6 @@
+# /src/model/student.py
+
+
 import hashlib
 import uuid
 from dataclasses import dataclass, field
