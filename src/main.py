@@ -1,6 +1,6 @@
 # /src/main.py
-from cli.main_menu import run_main_menu  # MODIFIED
-from cli.ui import console               # MODIFIED
+from cli.main_menu import run_main_menu 
+from cli.ui import console              
 
 def main():
     """

@@ -3,9 +3,9 @@ from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
 
-from services import student_service  # MODIFIED
-from cli.ui import console            # MODIFIED
-import data as data                   # MODIFIED
+from services import student_service  
+from cli.ui import console            
+import data as data                   
 
 def run_student_menu():
     """
