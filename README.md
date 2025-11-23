@@ -98,4 +98,4 @@ This project was created for a software engineering assignment. Choose a license
 
 ## Where to find design notes
 
-See `architect.md` in the repository root for architecture, models, and service descriptions.
+See `architect.md` in the repository root for architecture, models, and service descriptions :)
