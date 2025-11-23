@@ -42,8 +42,10 @@ See `architect.md` for additional architecture and data model notes.
 
 ## Requirements
 
-- Python 3.10+ (recommended)
-- `rich` (for CLI formatting)
+Install the required dependencies:
+    ```sh
+    pip install -r requirements.txt
+    ```
 
 You can install `rich` directly:
 
@@ -97,13 +99,3 @@ This project was created for a software engineering assignment. Choose a license
 ## Where to find design notes
 
 See `architect.md` in the repository root for architecture, models, and service descriptions.
-
----
-
-If you'd like, I can:
-
-- Add a `requirements.txt` or `pyproject.toml` listing `rich` and Python version
-- Add a minimal `LICENSE` file (MIT)
-- Add a simple `run.sh` script to create a venv and run the app
-
-Tell me which of those you'd like next and I'll implement it.
