@@ -2,71 +2,124 @@
 from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
-
-from services import student_service  
-from cli.ui import console            
-import data as data                   
+from cli.ui import console
+from services import student_service, loan_service, report_service, search_service
+import data
 
 def run_student_menu():
     """
-    Displays the menu for Student users.
+    Displays the public menu for Student users.
     """
     while True:
         console.print(Panel(
-            "[bold]What would you like to do?[/bold]\n\n"
-            "  [1] Register (Req 1-1)\n"
-            "  [2] Login (Req 1-2) [Not Implemented]\n"
-            "  [3] List All Students (Testing)\n"
+            "[bold]Student Portal[/bold]\n\n"
+            "  [1] Register\n"
+            "  [2] Login\n"
             "  [0] Back to Main Menu",
             title="--- Student Menu ---",
             border_style="green"
         ))
-        
-        choice = Prompt.ask("Enter your choice", choices=["1", "2", "3", "0"], default="1")
-        
+        choice = Prompt.ask("Enter your choice", choices=["1", "2", "0"], default="1")
+
         if choice == '1':
             handle_register_student()
         elif choice == '2':
-            console.print("[yellow]Login functionality is not yet implemented.[/yellow]")
-        elif choice == '3':
-            handle_list_students()
+            handle_login()
         elif choice == '0':
-            console.print("[dim]Returning to Main Menu...[/dim]")
             break
 
 def handle_register_student():
-    """Handles the UI for student registration."""
-    console.print("\n[bold]--- Student Registration ---[/bold]")
-    username = Prompt.ask("Enter new username")
-    password = Prompt.ask("Enter new password", password=True)
+    console.print("\n[bold]--- Registration ---[/bold]")
+    username = Prompt.ask("Choose username")
+    password = Prompt.ask("Choose password", password=True)
     
-    if not username.strip() or not password.strip():
-        console.print("[danger]Error: Username and password cannot be empty.[/danger]")
+    try:
+        new_student = student_service.register_student(username, password)
+        console.print(f"[bold green]Success![/bold green] ID: {new_student.student_id}")
+    except ValueError as e:
+        console.print(f"[bold red]Error:[/bold red] {e}")
+
+def handle_login():
+    console.print("\n[bold]--- Login ---[/bold]")
+    username = Prompt.ask("Username")
+    password = Prompt.ask("Password", password=True)
+
+    student = student_service.authenticate_student(username, password)
+    
+    if student:
+        if not student.is_active:
+            console.print("[red]Account is inactive. Contact manager.[/red]")
+            return
+        console.print(f"[green]Welcome back, {student.username}![/green]")
+        run_logged_in_menu(student)
+    else:
+        console.print("[bold red]Invalid credentials.[/bold red]")
+
+def run_logged_in_menu(student):
+    """
+    Menu accessible only AFTER login.
+    """
+    while True:
+        console.print(Panel(
+            f"User: [cyan]{student.username}[/cyan]\n\n"
+            "  [1] Search & Borrow Books\n"
+            "  [2] My Profile (Reports)\n"
+            "  [0] Logout",
+            title="--- Student Dashboard ---",
+            border_style="green"
+        ))
+        choice = Prompt.ask("Choice", choices=["1", "2", "0"])
+
+        if choice == '1':
+            handle_borrow_flow(student)
+        elif choice == '2':
+            handle_profile(student)
+        elif choice == '0':
+            break
+
+def handle_borrow_flow(student):
+    # reuse logic from guest menu or similar, but with 'Borrow' option
+    console.print("\n[bold]Search for a book to borrow:[/bold]")
+    title = Prompt.ask("Title search").strip() or None
+    results = search_service.search_books(title=title)
+    
+    if not results:
+        console.print("[yellow]No books found.[/yellow]")
+        return
+
+    # Display
+    table = Table()
+    table.add_column("ID", style="cyan")
+    table.add_column("Title", style="magenta")
+    table.add_column("Available", style="yellow")
+    
+    for b in results:
+        table.add_row(str(b.book_id), b.title, "Yes" if b.is_available else "No")
+    console.print(table)
+
+    # Action
+    book_id_str = Prompt.ask("Enter Book ID to borrow (or press Enter to cancel)")
+    if not book_id_str:
         return
 
     try:
-        new_student = student_service.register_student(username, password)
-        console.print(f"\n[bold green]Success: Student '{new_student.username}' registered![/bold green]")
-        console.print(f"Your Student ID is: [cyan]{new_student.student_id}[/cyan]")
-    except ValueError as e:
-        console.print(f"\n[danger]Error: {e}[/danger]")
-    except Exception as e:
-        console.print(f"\n[danger]An unexpected error occurred: {e}[/danger]")
-
-def handle_list_students():
-    """(For testing) Displays all students currently in the system."""
-    console.print("\n[bold]--- All Registered Students ---[/bold]")
-    if not data.students:
-        console.print("[yellow]No students registered yet.[/yellow]")
-        return
-
-    table = Table(title="Registered Students")
-    table.add_column("Student ID", style="cyan", no_wrap=True)
-    table.add_column("Username", style="magenta")
-    table.add_column("Status", justify="right", style="green")
-
-    for student in data.students:
-        status = "Active" if student.is_active else "Inactive"
-        table.add_row(str(student.student_id), student.username, status)
+        # Convert string to UUID object
+        from uuid import UUID
+        book_uuid = UUID(book_id_str)
         
-    console.print(table)
+        req = loan_service.request_loan(student.student_id, book_uuid)
+        console.print(f"[bold green]Request Submitted![/bold green] Request ID: {req.request_id}")
+        console.print("Status: [yellow]PENDING[/yellow] (Wait for Staff approval)")
+    except ValueError as e: # Handles invalid UUID format or Logic errors
+        console.print(f"[red]Error:[/red] {e}")
+    except Exception as e:
+        console.print(f"[red]Unexpected Error:[/red] {e}")
+
+def handle_profile(student):
+    report = report_service.generate_student_report(student.student_id)
+    console.print(Panel(
+        f"Total Loans: {report['total_loans']}\n"
+        f"Books Currently Held: {report['unreturned_books']}\n"
+        f"Overdue: {report['overdue_loans']}",
+        title="My Profile"
+    ))

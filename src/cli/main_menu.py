@@ -1,18 +1,18 @@
 # /src/cli/main_menu.py
 from rich.panel import Panel
 from rich.prompt import Prompt
-
-from cli import student_menu  
-from cli import staff_menu    
-from cli.ui import console    
+from cli.ui import console
+from cli import student_menu
+from cli import staff_menu
+from cli import guest_menu
+from cli import manager_menu
 
 def run_main_menu():
     """
     Main application loop.
-    Displays the primary user selection menu and routes to sub-menus.
     """
     console.print("\nWelcome to the [bold cyan]University Library Management System[/]!")
-    
+
     while True:
         console.print(Panel(
             "[bold]Select your user type:[/bold]\n\n"
@@ -24,17 +24,17 @@ def run_main_menu():
             title="--- Main Menu ---",
             border_style="blue"
         ))
-        
+
         choice = Prompt.ask("Enter your choice", choices=["1", "2", "3", "4", "0"], default="1")
-        
+
         if choice == '1':
             student_menu.run_student_menu()
         elif choice == '2':
             staff_menu.run_staff_menu()
         elif choice == '3':
-            console.print("[yellow]Guest menu not yet implemented.[/yellow]")
+            guest_menu.run_guest_menu()
         elif choice == '4':
-            console.print("[yellow]Manager menu not yet implemented.[/yellow]")
+            manager_menu.run_manager_menu()
         elif choice == '0':
             console.print("[bold]Exiting application. Goodbye.[/bold]")
             break
