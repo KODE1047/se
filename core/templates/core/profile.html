@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">👤 Student Report: {{ user.username }}</h2>
+    
+    <div class="row text-center mb-5">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h1>{{ total_loans }}</h1>
+                    <p>Total Loans</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h1>{{ unreturned_books }}</h1>
+                    <p>Books in Hand</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h1>{{ overdue_loans }}</h1>
+                    <p>Overdue (>14 Days)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+{% endblock %}
