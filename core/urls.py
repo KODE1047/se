@@ -10,4 +10,6 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('loan/<uuid:book_id>/', views.request_loan, name='request_loan'),
     path('return/<uuid:loan_id>/', views.return_book, name='return_book'),
+    path('guest/', views.guest_library, name='guest_library'), # <--- ADD THIS
+
 ]

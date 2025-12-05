@@ -1,4 +1,4 @@
-var staticCacheName = 'uni-library-v1';
+var staticCacheName = 'uni-library-v2';
 
 self.addEventListener('install', function(e) {
     e.waitUntil(
@@ -6,7 +6,9 @@ self.addEventListener('install', function(e) {
             return cache.addAll([
                 '/',
                 '/dashboard/',
-                '/static/css/style.css', // (Optional if you add custom css)
+                '/guest/',
+                '/static/css/style.css',
+                '/static/images/icon-160.png',
                 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
                 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js'
             ]);

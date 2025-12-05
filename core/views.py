@@ -69,3 +69,12 @@ def return_book(request, loan_id):
         messages.success(request, "Book returned successfully.")
         
     return redirect('dashboard')
+
+# /core/views.py (Add to bottom)
+
+def guest_library(request):
+    """Read-only view for non-logged-in users."""
+    # Show ALL books (even unavailable ones) so guests see the full catalog
+    books = Book.objects.all().order_by('title')
+    return render(request, 'core/guest_list.html', {'books': books})
+

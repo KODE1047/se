@@ -2,17 +2,42 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-6 col-lg-4">
-        <div class="card shadow">
-            <div class="card-body">
-                <h3 class="text-center mb-4">Register</h3>
+    <div class="col-12 auth-container">
+        <div class="card shadow-lg">
+            <div class="auth-header">
+                <h4 class="mb-0 text-success">New Registration</h4>
+            </div>
+            <div class="card-body p-4">
                 <form method="post">
                     {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-success w-100">Sign Up</button>
+                    <!-- Render Django form nicely -->
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-success btn-lg w-100">Register & Login</button>
                 </form>
+                <div class="text-center mt-3">
+                    <a href="{% url 'home' %}" class="text-decoration-none">Already have an account? Login</a>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Quick fix for Django default form styling -->
+<script>
+    // Adds bootstrap class to django generated inputs
+    document.querySelectorAll('input').forEach(input => {
+        input.classList.add('form-control');
+    });
+</script>
 {% endblock %}

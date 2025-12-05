@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-0">👀 Guest Catalog</h2>
+        <p class="text-muted">Browse our collection. Login to borrow.</p>
+    </div>
+    <a href="{% url 'home' %}" class="btn btn-primary px-4">Login Now</a>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for book in books %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    {% if book.is_available %}
+                        <span class="badge-avail">Available</span>
+                    {% else %}
+                        <span class="badge-out">On Loan</span>
+                    {% endif %}
+                    <small class="text-muted">{{ book.publication_year }}</small>
+                </div>
+                
+                <h5 class="card-title mb-1">{{ book.title }}</h5>
+                <p class="card-text text-secondary">{{ book.author }}</p>
+                
+                <hr>
+                
+                <a href="{% url 'home' %}" class="btn btn-sm btn-outline-primary w-100 disabled-link" style="opacity: 0.6;">
+                    🔒 Login to Borrow
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
