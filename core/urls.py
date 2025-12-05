@@ -21,4 +21,5 @@ urlpatterns = [
     
     # Guest
     path('guest/', views.guest_library, name='guest_library'),
+    path('offline/', views.offline, name='offline'),
 ]

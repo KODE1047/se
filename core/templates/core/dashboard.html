@@ -41,9 +41,12 @@
                         
                         <div class="mt-auto">
                             {% if book.is_available %}
-                                <a href="{% url 'request_loan' book.book_id %}" class="btn btn-success w-100">
-                                    Request Loan
-                                </a>
+                                <form method="post" action="{% url 'request_loan' book.book_id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success w-100">
+                                        Request Loan
+                                    </button>
+                                </form>
                             {% else %}
                                 <button class="btn btn-secondary w-100" disabled>Unavailable</button>
                             {% endif %}
@@ -72,7 +75,10 @@
                         <span class="badge bg-warning text-dark">Pending Approval</span>
                     {% elif loan.status == 'APPROVED' %}
                         <span class="badge bg-success">Borrowed</span>
-                        <a href="{% url 'return_book' loan.request_id %}" class="btn btn-sm btn-outline-danger mt-1 d-block">Return</a>
+                        <form method="post" action="{% url 'return_book' loan.request_id %}" class="mt-1">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger w-100">Return</button>
+                        </form>
                     {% elif loan.status == 'RETURNED' %}
                         <span class="badge bg-secondary">Returned</span>
                     {% endif %}

@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib import messages
 from django.utils import timezone
-from django.db.models import Q, Avg, F, ExpressionWrapper, fields
+from django.db import transaction
 from .models import Book, Loan
 
 # --- Scenario 1: Authentication ---
@@ -70,6 +70,10 @@ def dashboard(request):
 def request_loan(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
 
+    if request.method != 'POST':
+        messages.error(request, "Invalid request method.")
+        return redirect('dashboard')
+
     # Scenario 3-2: Inactive Student Check
     if not request.user.is_active:
         messages.error(request, "Error: Inactive accounts cannot borrow books.")
@@ -105,28 +109,37 @@ def approve_loan(request, loan_id):
     Scenario 3-4: Approve Valid -> Status APPROVED, Book Unavailable
     Scenario 3-5: Approve Approved -> Error
     """
+    if request.method != 'POST':
+        messages.error(request, "Invalid request method.")
+        return redirect('staff_dashboard')
+
     loan = get_object_or_404(Loan, pk=loan_id)
 
-    if loan.status != 'PENDING':
-        messages.error(request, "Error: Can only approve PENDING requests.")
-        return redirect('staff_dashboard')
+    with transaction.atomic():
+        if loan.status != 'PENDING':
+            messages.error(request, "Error: Can only approve PENDING requests.")
+            return redirect('staff_dashboard')
 
-    if not loan.book.is_available:
-        messages.error(request, "Error: Book is no longer available.")
-        return redirect('staff_dashboard')
+        if not loan.book.is_available:
+            messages.error(request, "Error: Book is no longer available.")
+            return redirect('staff_dashboard')
 
-    # Execute Approval
-    loan.status = 'APPROVED'
-    loan.book.is_available = False
-    loan.book.save()
-    loan.save()
-    
+        # Execute Approval
+        loan.status = 'APPROVED'
+        loan.book.is_available = False
+        loan.book.save()
+        loan.save()
+
     messages.success(request, f"Approved loan for {loan.book.title}")
     return redirect('staff_dashboard')
 
 @login_required
 def return_book(request, loan_id):
     # Allow Student to return OR Staff to mark returned
+    if request.method != 'POST':
+        messages.error(request, "Invalid request method.")
+        return redirect('dashboard')
+
     loan = get_object_or_404(Loan, pk=loan_id)
     
     # Security: Only the owner or staff can return
@@ -138,11 +151,13 @@ def return_book(request, loan_id):
         loan.status = 'RETURNED'
         loan.return_date = timezone.now()
         loan.save()
-        
+
         loan.book.is_available = True
         loan.book.save()
         messages.success(request, "Book returned successfully.")
-        
+    else:
+        messages.warning(request, "This loan cannot be returned.")
+
     return redirect('dashboard')
 
 # --- Scenario 4: Reporting Service ---
@@ -198,15 +213,20 @@ def library_stats(request):
     avg_loan_days = (total_days / count) if count > 0 else 0
     
     total_books = Book.objects.count()
-    total_students = Book.objects.count() # Typo in logic previously? No, simple count.
+    total_students_with_loans = Loan.objects.values('student').distinct().count()
     
     context = {
         'avg_loan_days': round(avg_loan_days, 2),
         'total_books': total_books,
-        'total_loans_all_time': Loan.objects.count()
+        'total_loans_all_time': Loan.objects.count(),
+        'total_students_with_loans': total_students_with_loans,
     }
     return render(request, 'core/stats.html', context)
 
 def guest_library(request):
     books = Book.objects.all().order_by('title')
     return render(request, 'core/guest_list.html', {'books': books})
+
+
+def offline(request):
+    return render(request, 'core/offline.html')

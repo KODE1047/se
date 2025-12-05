@@ -27,9 +27,12 @@
                             <td>{{ loan.book.title }}</td>
                             <td>{{ loan.request_date|date:"M d, H:i" }}</td>
                             <td>
-                                <a href="{% url 'approve_loan' loan.request_id %}" class="btn btn-success btn-sm">
-                                    ✅ Approve
-                                </a>
+                                <form method="post" action="{% url 'approve_loan' loan.request_id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        ✅ Approve
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         {% empty %}

@@ -16,6 +16,10 @@
             Total Transactions (All Time)
             <span class="badge bg-primary rounded-pill">{{ total_loans_all_time }}</span>
         </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+            Active Borrowers (Students With Loans)
+            <span class="badge bg-primary rounded-pill">{{ total_students_with_loans }}</span>
+        </div>
     </div>
     <div class="mt-4">
         <a href="{% url 'staff_dashboard' %}" class="btn btn-secondary">Back to Staff Dashboard</a>

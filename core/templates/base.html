@@ -57,12 +57,9 @@
 
                         <!-- Logout Button -->
                         <li class="nav-item">
-                            <form action="{% url 'logout' %}" method="post" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-sm btn-light text-primary fw-bold shadow-sm">
-                                    Logout
-                                </button>
-                            </form>
+                            <a href="{% url 'logout' %}" class="btn btn-sm btn-light text-primary fw-bold shadow-sm">
+                                Logout
+                            </a>
                         </li>
 
                     {% else %}
@@ -75,6 +72,11 @@
                         <li class="nav-item ms-2">
                             <a class="btn btn-sm btn-outline-light fw-bold" href="{% url 'home' %}">
                                 Login
+                            </a>
+                        </li>
+                        <li class="nav-item ms-2">
+                            <a class="btn btn-sm btn-warning fw-bold" href="{% url 'home' %}?next={% url 'staff_dashboard' %}">
+                                Staff Login
                             </a>
                         </li>
                         <li class="nav-item ms-2">
