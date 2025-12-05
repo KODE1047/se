@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <!-- Section 1: Available Books -->
+    <div class="col-md-8">
+        <h4 class="mb-3">📖 Available Books</h4>
+        <div class="row">
+            {% for book in books %}
+            <div class="col-md-6 mb-3">
+                <div class="card h-100 border-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ book.title }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ book.author }} ({{ book.publication_year }})</h6>
+                        <a href="{% url 'request_loan' book.book_id %}" class="btn btn-primary btn-sm w-100">Borrow Now</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-muted">No books currently available.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Section 2: My Active Loans -->
+    <div class="col-md-4">
+        <h4 class="mb-3">🎒 My Loans</h4>
+        <div class="list-group">
+            {% for loan in my_loans %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ loan.book.title }}</strong><br>
+                    <small class="text-muted">{{ loan.get_status_display }}</small>
+                </div>
+                {% if loan.status == 'APPROVED' %}
+                    <a href="{% url 'return_book' loan.request_id %}" class="btn btn-warning btn-sm">Return</a>
+                {% elif loan.status == 'RETURNED' %}
+                    <span class="badge bg-secondary">Done</span>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="list-group-item">You haven't borrowed anything yet.</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
