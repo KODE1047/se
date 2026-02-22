@@ -43,7 +43,7 @@ See `architect.md` for additional architecture and data model notes.
 ## Requirements
 
 Install the required dependencies:
-    ```sh
+    ```bash
     pip install -r requirements.txt
     ```
 
