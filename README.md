@@ -43,9 +43,9 @@ See `architect.md` for additional architecture and data model notes.
 ## Requirements
 
 Install the required dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
+```bash
+pip install -r requirements.txt
+```
 
 You can install `rich` directly:
 
